@@ -3,17 +3,17 @@
 #include <rlib/stream.hpp>
 #include "keyring_op.hpp"
 
+rlib::logger rlog(std::cerr);
 
 int main(int argc, char **argv) {
     rlib::opt_parser args(argc, argv);
-    rlib::logger rlog(std::cout);
 
     if(args.getBoolArg("-h", "--help")) {
         rlog.info("Usage: {} [-h/--help] [-q/--quiet] --secret-file <filename> # use `-` as stdin.");
         return 0;
     }
     if(args.getBoolArg("-q", "--quiet")) {
-        rlog = rlib::logger(rlib::null_stream);
+        rlog.set_log_level(rlib::log_level_t::FATAL);
     }
 
     auto secret_file_name = args.getValueArg("--secret-file");
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
         auto res = do_unlock(keyring_and_pswd.at(0), keyring_and_pswd.at(1));
         auto msg = keyringResultToString(res);
         if(res == GNOME_KEYRING_RESULT_OK)
-            rlog.verbose("line {}: {}.", line_num, msg);
+            rlog.info("line {}: {}.", line_num, msg);
         else {
             rlog.error("line {}: {}.", line_num, msg);
             no_error = false;
