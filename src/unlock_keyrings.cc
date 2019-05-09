@@ -43,9 +43,9 @@ int main(int argc, char **argv) {
         auto res = do_unlock(keyring_and_pswd.at(0), keyring_and_pswd.at(1));
         auto msg = keyringResultToString(res);
         if(res == GNOME_KEYRING_RESULT_OK)
-            rlog.info("line {}: {}.", line_num, msg);
+            rlog.info("line {}: Working on keyring `{}`: {}.", line_num, keyring_and_pswd.at(0), msg);
         else {
-            rlog.error("line {}: {}.", line_num, msg);
+            rlog.error("line {}: Working on keyring `{}`: {}.", line_num, keyring_and_pswd.at(0), msg);
             no_error = false;
         }
 

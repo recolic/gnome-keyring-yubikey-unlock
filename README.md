@@ -35,6 +35,12 @@ Then, add the following command to gnome-autostart. You should know how to auto-
 
 You're all set! Re-login and have a try!
 
+## FAQ
+
+- Keyring not exist? The name is correct.
+
+run `tools/list_keyrings.sh` to check name of your keyrings. The `login` keyring may be shown as `登录` based on your locale.
+
 ## TODO
 
 This program is using deprecated `libgnome-keyring-1` rather than `libsecret`, only because the author can not understand how to use `libsecret`. There's almost no document! (If you think auto-generated document is document, then all source code are well documented. )
