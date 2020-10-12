@@ -17,7 +17,7 @@ I encrypt the `keyring-name : password` pair with GnuPG and save it as `secret-f
 
 First, build the project from source.
 ```
-git clone https://github.com/recolic/gnome-keyring-yubikey-unlock
+git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
 cd gnome-keyring-yubikey-unlock/src && make && cd ..
 ```
 

@@ -1,11 +1,10 @@
 
 CXX ?= g++
-CXXFLAGS := $(shell pkg-config --cflags --libs gnome-keyring-1) -I ./lib -I .
+# Accepts CXXSTD >= C++14
+CXXFLAGS := $(shell pkg-config --cflags --libs gnome-keyring-1) -I ./lib -I . -std=c++14
 EXTRA_FLAGS ?=
 
-secret: rlib
-	$(CXX) $(CXXFLAGS) $(EXTRA_FLAGS) unlock_keyrings.cc ./lib/rlib/libr.a -o ../bin/unlock_keyrings
-
-rlib:
-	cd ./lib/rlib && make
+secret:
+	mkdir -p ../bin/
+	$(CXX) $(CXXFLAGS) $(EXTRA_FLAGS) unlock_keyrings.cc -o ../bin/unlock_keyrings
 
