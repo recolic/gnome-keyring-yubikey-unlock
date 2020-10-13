@@ -17,7 +17,7 @@ I encrypt the `keyring-name : password` pair with GnuPG and save it as `secret-f
 
 ## Usage
 
-> I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for yubikey-GPG. 
+> I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge. 
 
 First, build the project from source.
 ```
