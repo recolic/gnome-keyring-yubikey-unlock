@@ -19,7 +19,20 @@ I encrypt the `keyring-name : password` pair with GnuPG and save it as `secret-f
 
 > I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge. 
 
-First, build the project from source.
+First, install packages.
+```
+wget http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/multiarch-support_2.27-3ubuntu1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring-common_3.12.0-1build1_all.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring0_3.12.0-1build1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+
+sudo dpkg -i multiarch-support_2.27-3ubuntu1_amd64.deb
+sudo dpkg-reconfigure multiarch-support
+sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.12.0-1build1_amd64.deb gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+```
+
+Then, build the project from source.
 ```
 git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
 cd gnome-keyring-yubikey-unlock/src && make && cd ..
@@ -30,8 +43,6 @@ Then, create your secret file.
 gnome-keyring-yubikey-unlock/create_secret_file.sh /path/to/your_secret [Your GnuPG public key]
 # input your keyring:password
 ```
-
-As an example, I need to input `默认钥匙环:My_Very_Long_Login_Password`.
 
 Then, add the following command to gnome-autostart. You should know how to auto-run a command after starting gnome.
 
