@@ -15,6 +15,23 @@ Currently the only solution is to set the password of `login` keyring to empty. 
 
 I encrypt the `keyring-name : password` pair with GnuPG and save it as `secret-file`. Then on starting gnome, you have yubikey inserted. Then an auto-started script call GnuPG to decrypt the secret file, and pipe use the password to unlock your keyring. GnuPG will ask you to insert yubikey.
 
+## Dependencies
+The project uses libgnome-keyring-dev
+
+### Ubuntu 20.04
+libgnome-keyring-dev is not in the repositories, you have to install it and its dependencies manually:
+```
+wget http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/multiarch-support_2.27-3ubuntu1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring-common_3.12.0-1build1_all.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring0_3.12.0-1build1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb
+wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+
+sudo dpkg -i multiarch-support_2.27-3ubuntu1_amd64.deb
+sudo dpkg-reconfigure multiarch-support
+sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.12.0-1build1_amd64.deb gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+```
+
 ## Usage
 
 > I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge. 
