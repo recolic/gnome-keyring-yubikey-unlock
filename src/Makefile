@@ -6,5 +6,5 @@ EXTRA_FLAGS ?=
 
 secret:
 	mkdir -p ../bin/
-	$(CXX) $(CXXFLAGS) $(EXTRA_FLAGS) unlock_keyrings.cc -o ../bin/unlock_keyrings
+	$(CXX)  unlock_keyrings.cc -o ../bin/unlock_keyrings $(CXXFLAGS) $(EXTRA_FLAGS)
 
