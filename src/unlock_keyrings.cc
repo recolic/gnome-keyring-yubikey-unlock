@@ -1,6 +1,5 @@
 #include <rlib/log.hpp>
 #include <rlib/opt.hpp>
-#include <rlib/stream.hpp>
 #include "keyring_op.hpp"
 
 rlib::logger rlog(std::cerr);
