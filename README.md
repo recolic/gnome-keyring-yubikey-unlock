@@ -48,7 +48,7 @@ gnome-keyring-yubikey-unlock/create_secret_file.sh /path/to/your_secret [Your Gn
 # input your keyring:password
 ```
 
-As an example, I need to input `默认钥匙环:My_Very_Long_Login_Password`.
+As an example, I need to input `默认钥匙环:My_Very_Long_Login_Password`. (You may use `seahorse` to determine the name of your keyring)
 
 Then, add the following command to gnome-autostart. You should know how to auto-run a command after starting gnome.
 
