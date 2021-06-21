@@ -48,7 +48,7 @@ gnome-keyring-yubikey-unlock/create_secret_file.sh /path/to/your_secret [Your Gn
 # input your keyring:password
 ```
 
-As an example, I need to input `默认钥匙环:My_Very_Long_Login_Password`. (You may use `seahorse` to determine the name of your keyring)
+As an example, I need to input `login:My_Very_Long_Login_Password`. (You may use `seahorse` or `tools/list_keyrings.sh` to determine the name of your keyring)
 
 Then, add the following command to gnome-autostart. You should know how to auto-run a command after starting gnome.
 
@@ -60,10 +60,15 @@ You're all set! Re-login and have a try!
 
 ## FAQ
 
-- Keyring not exist? The name is correct.
+- Keyring not exist?
 
 run `tools/list_keyrings.sh` to check name of your keyrings. The `login` keyring may be shown as `登录` based on your locale.
 
+- Working on keyring `Login`: GNOME\_KEYRING\_RESULT\_BAD\_ARGUMENTS.
+
+Seahorse sometimes show an incorrect name for "Login" keyring. It's real name is `login` instead of `Login`. You may confirm this by running `tools/list_keyrings.sh`. 
+
 ## TODO
 
-This program is using deprecated `libgnome-keyring-1` rather than `libsecret`, only because the author can not understand how to use `libsecret`. There's almost no document! (If you think auto-generated document is document, then all source code are well documented. )
+This program is using deprecated `libgnome-keyring-1` instead of `libsecret`, because the author could not understand how to use `libsecret`. There's almost no document about how to use `secret_service_unlock_sync()`. 
+
