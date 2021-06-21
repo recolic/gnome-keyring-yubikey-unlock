@@ -20,6 +20,7 @@ The project uses libgnome-keyring-dev
 
 ### Ubuntu 20.04
 libgnome-keyring-dev is not in the repositories, you have to install it and its dependencies manually:
+
 ```
 wget http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/multiarch-support_2.27-3ubuntu1_amd64.deb
 wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgnome-keyring-common_3.12.0-1build1_all.deb
@@ -30,6 +31,12 @@ wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgn
 sudo dpkg -i multiarch-support_2.27-3ubuntu1_amd64.deb
 sudo dpkg-reconfigure multiarch-support
 sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.12.0-1build1_amd64.deb gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+```
+
+### Arch Linux
+
+```
+sudo pacman -S libgnome-keyring
 ```
 
 ## Usage
@@ -67,6 +74,12 @@ run `tools/list_keyrings.sh` to check name of your keyrings. The `login` keyring
 - Working on keyring `Login`: GNOME\_KEYRING\_RESULT\_BAD\_ARGUMENTS.
 
 Seahorse sometimes show an incorrect name for "Login" keyring. It's real name is `login` instead of `Login`. You may confirm this by running `tools/list_keyrings.sh`. 
+
+- It's simply not working. How do I debug this program? 
+
+```
+echo 'login:my_password' | bin/unlock_keyrings --secret-file -
+```
 
 ## TODO
 
