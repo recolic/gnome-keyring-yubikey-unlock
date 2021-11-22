@@ -45,7 +45,7 @@ sudo pacman -S libgnome-keyring
 
 > I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge.
 
-First, build the project from source.
+First, build the project from source. Note the `--recursive` flag, that one's important
 
 ```
 git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
