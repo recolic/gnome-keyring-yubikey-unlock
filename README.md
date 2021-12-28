@@ -63,6 +63,14 @@ Then, add the following command to gnome-autostart. You should know how to auto-
 /path/to/this/project/unlock_keyrings.sh /path/to/your_secret
 ```
 
+Optionally, if you don't want to enter your GPG smartcard pin every time you log in, add it as parameter to the command. If your pin is e.g. 123456:
+
+```
+/path/to/this/project/unlock_keyrings.sh /path/to/your_secret 123456
+```
+
+This obviously weakens the security of the private key, so obviously only do this if you're comfortable with having your pin stored on your disk in plain text.
+
 You're all set! Re-login and have a try!
 
 ## FAQ
