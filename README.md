@@ -61,8 +61,6 @@ gnome-keyring-yubikey-unlock/create_secret_file.sh /path/to/your_secret [Your Gn
 
 As an example, I need to input `login:My_Very_Long_Login_Password`. (You may use `seahorse` or `tools/list_keyrings.sh` to determine the name of your keyring)
 
-Alternatively, use an already existing entry from your [password store](https://www.passwordstore.org/) (e.g. `/home/user/.password-store/password.gpg`)
-
 Then, add the following command to gnome-autostart. You should know how to auto-run a command after starting gnome.
 
 ```
