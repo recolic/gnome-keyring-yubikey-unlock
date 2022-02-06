@@ -32,3 +32,18 @@ When doing changes to the service file, run
 ```sh
 systemctl --user daemon-reload
 ```
+
+## Start Via HOME/.config/autostart
+
+Create a new file at `~/.config/autostart/something.desktop`, with the following content: 
+
+```ini
+[Desktop Entry]
+Type=Application
+Exec=/path/to/this/project/unlock_keyrings.sh /path/to/your_secret 123456
+Hidden=false
+X-GNOME-Autostart-enabled=true
+Name=Unlock_Gnome_Keyring
+Comment=just unlock gnome keyring with yubikey
+```
+
