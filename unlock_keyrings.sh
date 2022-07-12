@@ -28,6 +28,9 @@ if [[ ! "$smartcard_pin" = '' ]]; then
     gpg_options=("--pinentry-mode" "loopback" "--passphrase" "$smartcard_pin")
 fi
 
+# In arch GPG 2.2.24, you can not use smartcard before running this cmd.
+# timeout 0.1s gpg --edit-card
+
 cd `where_am_i` &&
 gpg "${gpg_options[@]}" --decrypt "$secret_file" | bin/unlock_keyrings --secret-file - --quiet
 
