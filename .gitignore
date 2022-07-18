@@ -2,4 +2,6 @@
 *.out
 *.gi
 bin/unlock_keyrings
+.idea
+testinput
 

@@ -41,6 +41,10 @@ sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.
 sudo pacman -S libgnome-keyring
 ```
 
+### Other Distro
+
+If your distribution is not providing libgnome-keyring, you can get the `.so` library from <https://archlinux.org/packages/extra/x86_64/libgnome-keyring/download>. 
+
 ## Usage
 
 > I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge.
