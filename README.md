@@ -33,6 +33,8 @@ wget http://security.ubuntu.com/ubuntu/pool/universe/libg/libgnome-keyring/libgn
 sudo dpkg -i multiarch-support_2.27-3ubuntu1_amd64.deb
 sudo dpkg-reconfigure multiarch-support
 sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.12.0-1build1_amd64.deb gir1.2-gnomekeyring-1.0_3.12.0-1build1_amd64.deb libgnome-keyring-dev_3.12.0-1build1_amd64.deb
+
+sudo apt --fix-broken -y install
 ```
 
 ### Arch Linux
