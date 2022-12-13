@@ -97,7 +97,7 @@ Seahorse sometimes show an incorrect name for "Login" keyring. It's real name is
 
 We need `libgnome-keyring.so.0.2.0` (or newer) to talk to latest gnome. Please check if your `libgnome-keyring.so` points to an older version.
 
-If your distribution does not provide a package, you can download it from archlinux repo and link to the `.so` file manually.
+If your distribution does not provide a good library, you can download it from archlinux repo and link to the `.so` file manually.
 
 - It's simply not working. How do I debug this program?
 
