@@ -1,3 +1,10 @@
+/*
+ * This is an implementation to unlock gnome keyring.
+ * It talks to `org.gnome.keyring.InternalUnsupportedGuiltRiddenInterface` through `/run/user/1000/bus`,
+ *   calling the `UnlockWithMasterPassword` function, to unlock the keyring.
+ * It involves multiple send/recv, allows unlocking any keyring.
+ */
+
 #include <gnome-keyring-1/gnome-keyring.h>
 #include <string>
 #include <rlib/macro.hpp>
