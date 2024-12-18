@@ -1,6 +1,11 @@
 #include <rlib/log.hpp>
 #include <rlib/opt.hpp>
-#include "keyring_op.hpp"
+#ifdef KEYRING_IMPL_lib
+#include "impl-libgnome-keyring.hpp"
+#endif
+#ifdef KEYRING_IMPL_standalone
+#include "impl-standalone.hpp"
+#endif
 
 rlib::logger rlog(std::cerr);
 
@@ -38,6 +43,11 @@ int main(int argc, char **argv) {
             rlog.error("Secret file line {} has wrong format. Expecting `${keyring}:${password}`", line_num);
             return 3;
         }
+
+#ifdef KEYRING_IMPL_standalone
+        rlog.warning("This implementation 'standalone' always unlocks your default keyring. Keyring name `{}` will be ignored. Build with KEYRING_IMPL=lib if necessary.", keyring_and_pswd.at(0));
+        keyring_and_pswd.at(0) = "_ignored_";
+#endif
 
         auto res = do_unlock(keyring_and_pswd.at(0), keyring_and_pswd.at(1));
         auto msg = keyringResultToString(res);
