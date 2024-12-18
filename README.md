@@ -1,6 +1,6 @@
 # gnome-keyring-yubikey-unlock
 
-![](https://img.shields.io/badge/CXXSTD-C%2B%2B14-green)
+![](https://img.shields.io/badge/CXXSTD-C%2B%2B17-green)
 
 Use GnuPG to unlock gnome-keyring, which is supported by yubikey and other smartcard.
 
@@ -15,11 +15,40 @@ Currently the only solution is to set the password of `login` keyring to empty. 
 
 I encrypt the `keyring-name : password` pair with GnuPG and save it as `secret-file`. Then on starting gnome, you have yubikey inserted. Then an auto-started script call GnuPG to decrypt the secret file, and pipe use the password to unlock your keyring. GnuPG will ask you to insert yubikey.
 
-## Dependencies
+## Usage
+
+> I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge.
+
+First, download this repo. Note the `--recursive` flag, that one's important
+
+```
+git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
+cd gnome-keyring-yubikey-unlock/src && make && cd ..
+```
+
+Secondly, choose an implementation: `standalone` impl only allows to unlock default keyring, and `lib` impl requires an extra library.
+
+<details>
+  <summary>Standalone Implementation</summary>
+
+```
+cd gnome-keyring-yubikey-unlock/src && make KEYRING_IMPL=standalone && cd ..
+```
+
+</details>
+
+<details>
+  <summary>Lib Implementation</summary>
+
+```
+cd gnome-keyring-yubikey-unlock/src && make KEYRING_IMPL=lib && cd ..
+```
+
+### Extra Dependency for "lib" implementation
 
 The project uses libgnome-keyring-dev
 
-### Ubuntu 20.04
+#### Ubuntu 20.04
 
 libgnome-keyring-dev is not in the repositories, you have to install it and its dependencies manually:
 
@@ -37,37 +66,32 @@ sudo dpkg -i libgnome-keyring-common_3.12.0-1build1_all.deb libgnome-keyring0_3.
 sudo apt --fix-broken -y install
 ```
 
-### Arch Linux
+#### Arch Linux
 
 ```
 sudo pacman -S libgnome-keyring
 ```
 
-### Other Distro
+#### Other Distro
 
 If your distribution is not providing libgnome-keyring, you can get the `.so` library from <https://archlinux.org/packages/extra/x86_64/libgnome-keyring/download>. 
+</details>
 
-## Usage
+Then, create your secret file. You may use my naive script (just in case you don't know GnuPG usage), or create an GnuPG-encrypted file by yourself.
 
-> I recommend you to **configure Yubikey as GPG smartcard**. The system would just ask you to unlock gnome-keyring with your default GPG software. You may generate a new GPG key for yubikey, or move your existing GPG key into yubikey. Refer to google for these knowledge.
+For example, you could say `login:My_Very_Long_Login_Password`. (You may use `seahorse` or `tools/list_keyrings.sh` to determine the name of your keyring)
 
-First, build the project from source. Note the `--recursive` flag, that one's important
-
-```
-git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
-cd gnome-keyring-yubikey-unlock/src && make && cd ..
-```
-
-Then, create your secret file.
+<details>
+  <summary>To use my naive secret file creation script</summary>
 
 ```
 gnome-keyring-yubikey-unlock/create_secret_file.sh /path/to/your_secret [Your GnuPG public key]
-# input your keyring:password
+# input your keyring_name:password
 ```
 
-As an example, I need to input `login:My_Very_Long_Login_Password`. (You may use `seahorse` or `tools/list_keyrings.sh` to determine the name of your keyring)
+</details>
 
-Then, add the following command to gnome-autostart. If you don't know how to do it, [read me](doc/how-to-gnome-autostart.md)! 
+Then, add the following command to gnome-autostart. If you don't know how to do it, [read me](doc/how-to-gnome-autostart.md).
 
 ```
 /path/to/this/project/unlock_keyrings.sh /path/to/your_secret
