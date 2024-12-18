@@ -26,7 +26,7 @@ git clone https://github.com/recolic/gnome-keyring-yubikey-unlock --recursive
 cd gnome-keyring-yubikey-unlock/src && make && cd ..
 ```
 
-Secondly, choose an implementation: `standalone` impl only allows to unlock default keyring, and `lib` impl requires an extra library.
+Secondly, choose an implementation: `standalone` impl always unlocks your default keyring, and `lib` impl requires an extra library.
 
 <details>
   <summary>Standalone Implementation</summary>
