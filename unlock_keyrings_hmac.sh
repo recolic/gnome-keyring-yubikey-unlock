@@ -68,11 +68,33 @@ fi
 # the signature here — we only need the hmac-secret output)
 fresh_cdh=$(dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 -w 0)
 
+_have_notify=false
+if command -v notify-send &>/dev/null; then
+    _have_notify=true
+    notify-send \
+        --app-name="Keyring Unlock" \
+        --icon=security-medium \
+        --expire-time=30000 \
+        "Touch your security key" \
+        "Tap your FIDO2 key to unlock the GNOME keyring."
+fi
+
 if ! assert_output=$(printf '%s\n%s\n%s\n%s\n' \
         "$fresh_cdh" "$rp_id" "$credential_id" "$salt" \
         | timeout 30s fido2-assert -G -h -p "${pin_opt[@]}" "$device"); then
+    if $_have_notify; then
+        notify-send \
+            --app-name="Keyring Unlock" --icon=security-low --expire-time=5000 \
+            "Keyring unlock failed" "Device not found, wrong PIN, or timed out."
+    fi
     echo "Error: fido2-assert failed (device not found, wrong PIN, or timed out)." >&2
     exit 1
+fi
+
+if $_have_notify; then
+    notify-send \
+        --app-name="Keyring Unlock" --icon=security-high --expire-time=3000 \
+        "Keyring unlocked" "GNOME keyring unlocked successfully."
 fi
 
 # For non-resident credential with hmac-secret, HMAC is on output line 5
