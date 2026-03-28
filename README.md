@@ -107,6 +107,63 @@ This obviously weakens the security of the private key, so obviously only do thi
 
 You're all set! Re-login and have a try!
 
+## Alternative: FIDO2 HMAC-Secret (no GPG required)
+
+If your security key supports the FIDO2 **hmac-secret** extension but does not act as a GPG smartcard (e.g. Thetis keys), you can use the HMAC-Secret based scripts instead. No GPG setup is needed.
+
+### How it works
+
+A FIDO2 credential is created on the device once. A random 32-byte salt is stored locally. On every unlock, the device computes `HMAC(device_key, salt)` — a deterministic 32-byte value tied to both the physical key and the salt file. That value is used as an AES-256 key to decrypt your `keyring:password` secret.
+
+Nothing is stored in plain text. Decryption requires both the salt file **and** the physical device.
+
+### Dependencies
+
+`libfido2` (provides `fido2-cred` and `fido2-assert`), `openssl`, and `xxd`. No Python, no GPG.
+
+```
+sudo apt install libfido2-dev   # Ubuntu/Debian
+sudo pacman -S libfido2         # Arch
+```
+
+### Setup
+
+**First**, build the C++ binary (standalone implementation recommended):
+
+```
+cd gnome-keyring-yubikey-unlock/src && make KEYRING_IMPL=standalone && cd ..
+```
+
+**Second**, create your secret file. You will be prompted to touch your key twice (once to create the credential, once to test it) and then to enter your `keyring:password` silently:
+
+```
+./create_secret_file_hmac.sh /path/to/your_secret.conf
+```
+
+When prompted, enter your keyring credentials in the format `keyring_name:password`. The login keyring is almost always named `login`:
+
+```
+login:My_Very_Long_Login_Password
+```
+
+**Third**, test the unlock manually:
+
+```
+./unlock_keyrings_hmac.sh /path/to/your_secret.conf
+```
+
+**Finally**, add to GNOME autostart. See [how-to-gnome-autostart.md](doc/how-to-gnome-autostart.md), using `unlock_keyrings_hmac.sh` in place of `unlock_keyrings.sh`:
+
+```
+/path/to/this/project/unlock_keyrings_hmac.sh /path/to/your_secret.conf
+```
+
+Optionally pass your device PIN as a third argument if you want to skip the PIN prompt at login (stored in plain text in your autostart entry):
+
+```
+/path/to/this/project/unlock_keyrings_hmac.sh /path/to/your_secret.conf 123456
+```
+
 ## FAQ
 
 - Keyring not exist?
