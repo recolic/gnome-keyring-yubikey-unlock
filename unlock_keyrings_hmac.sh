@@ -9,6 +9,8 @@
 #   ./unlock_keyrings_hmac.sh ~/.config/keyring-hmac.conf /dev/hidraw0
 #   ./unlock_keyrings_hmac.sh ~/.config/keyring-hmac.conf /dev/hidraw0 123456
 
+set -euo pipefail
+
 _self_bin_name="$0"
 config_file="${1:-}"
 [[ "$config_file" = '' ]] && echo "Usage: $0 <config_file> [device] [pin]" && exit 1
@@ -39,10 +41,9 @@ parse_config() {
 rp_id=$(parse_config rp_id)
 credential_id=$(parse_config credential_id)
 salt=$(parse_config salt)
-iv_hex=$(parse_config iv)
-ciphertext_b64=$(parse_config ciphertext)
+blob=$(parse_config blob)
 
-if [[ -z "$rp_id" || -z "$credential_id" || -z "$salt" || -z "$iv_hex" || -z "$ciphertext_b64" ]]; then
+if [[ -z "$rp_id" || -z "$credential_id" || -z "$salt" || -z "$blob" ]]; then
     echo "Error: config file '$config_file' is missing required fields." >&2
     exit 1
 fi
@@ -63,30 +64,48 @@ if [[ "${3:-}" != '' ]]; then
     pin_opt=(-t "pin=${3}")
 fi
 
-# Fresh random challenge each time (authenticator signs it, but we don't verify here)
+# Fresh random challenge each time (authenticator signs it, but we don't verify
+# the signature here — we only need the hmac-secret output)
 fresh_cdh=$(dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 -w 0)
 
-assert_output=$(printf '%s\n%s\n%s\n%s\n' \
-    "$fresh_cdh" "$rp_id" "$credential_id" "$salt" \
-    | fido2-assert -G -h -p "${pin_opt[@]}" "$device" 2>/dev/null)
+if ! assert_output=$(printf '%s\n%s\n%s\n%s\n' \
+        "$fresh_cdh" "$rp_id" "$credential_id" "$salt" \
+        | timeout 30s fido2-assert -G -h -p "${pin_opt[@]}" "$device"); then
+    echo "Error: fido2-assert failed (device not found, wrong PIN, or timed out)." >&2
+    exit 1
+fi
 
 # For non-resident credential with hmac-secret, HMAC is on output line 5
 hmac_b64=$(echo "$assert_output" | sed -n '5p')
 
-if [[ "$hmac_b64" = '' ]]; then
-    echo "Error: Failed to get HMAC secret from device." >&2
+# Validate: 32 bytes base64-encodes to exactly 44 characters
+if [[ -z "$hmac_b64" || ${#hmac_b64} -ne 44 ]]; then
+    echo "Error: Unexpected HMAC secret (expected 44 base64 chars, got ${#hmac_b64})." >&2
+    echo "       fido2-assert output format may have changed." >&2
     exit 1
 fi
 
-key_hex=$(echo "$hmac_b64" | base64 -d | xxd -p -c 256)
-plaintext=$(echo "$ciphertext_b64" | base64 -d \
-    | openssl enc -d -aes-256-cbc -K "$key_hex" -iv "$iv_hex" -nosalt 2>/dev/null)
-
-if [[ "$plaintext" = '' ]]; then
-    echo "Error: Decryption failed. Wrong device or corrupted config?" >&2
+# Decrypt with AES-256-GCM. Any tampering with the blob will cause an
+# authentication failure here before the plaintext is used.
+# Key is passed via environment variable to avoid exposure in the process table.
+if ! plaintext=$(printf '%s' "$blob" | \
+        HMAC_KEY="$hmac_b64" python3 -c '
+import base64, os, sys
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+from cryptography.exceptions import InvalidTag
+key = base64.b64decode(os.environ["HMAC_KEY"])
+data = base64.b64decode(sys.stdin.read().strip())
+nonce, ct = data[:12], data[12:]
+try:
+    pt = AESGCM(key).decrypt(nonce, ct, b"gnome-keyring-hmac")
+except InvalidTag:
+    sys.stderr.write("Error: Authentication failed. Wrong device or config tampered.\n")
+    sys.exit(1)
+sys.stdout.buffer.write(pt)
+'); then
     exit 1
 fi
 
 cd "$(where_am_i)"
-echo "$plaintext" | bin/unlock_keyrings --secret-file - --quiet
+printf '%s\n' "$plaintext" | bin/unlock_keyrings --secret-file - --quiet
 exit $?
